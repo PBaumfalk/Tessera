@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1
 # Tessera – selbst gehostetes QR-Code-Studio
 
-FROM node:24-bookworm-slim AS build
+FROM node:26-bookworm-slim AS build
 WORKDIR /src
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
 RUN npm run build && npm prune --omit=dev --no-audit --no-fund
 
-FROM node:24-bookworm-slim AS runtime
+FROM node:26-bookworm-slim AS runtime
 LABEL org.opencontainers.image.title="Tessera" \
       org.opencontainers.image.description="Selbst gehostetes QR-Code-Studio mit dynamischen Codes" \
       org.opencontainers.image.version="1.0.0"
