@@ -15,7 +15,7 @@ Ehrlich festgehalten, was nicht oder nur eingeschränkt getestet ist bzw. bewuss
 - **UTF-8 ohne ECI:** Wie praktisch alle Generatoren kodiert Tessera Umlaute als UTF-8 im Byte-Modus ohne ECI-Kennung. Aktuelle Smartphones lesen das korrekt, sehr alte Scanner zeigen eventuell falsche Zeichen.
 - **Farbraum:** PDF-Exporte verwenden RGB. Für Offsetdruck mit exakten CMYK- oder Sonderfarben sollte die Druckerei die Datei konvertieren. Ein EPS-Export ist nicht enthalten, PDF und SVG decken Vektor-Workflows ab.
 - **SVG-Logos im PDF** werden mit 1600 px gerastert eingebettet. Code, Formen und Beschriftung bleiben Vektor.
-- **Statistik** ist absichtlich minimal (Tageszahl, Gerätetyp). Standort, Uhrzeit oder Referrer werden aus Datenschutzgründen nicht erfasst.
+- **Statistik** ist absichtlich minimal: Anzahl pro Tag, Gerätetyp und der Zeitpunkt des letzten Scans. Standort, Referrer oder einzelne Scan-Zeitpunkte werden aus Datenschutzgründen nicht erfasst.
 - **Rendering im Hauptprozess:** Exporte und Prüfungen laufen nicht in eigenen Threads, sondern über eine Warteschlange mit Pausen zwischen den Einzelschritten. Ein einzelner sehr großer PNG-Export (8000 px, ca. 2–3 s) verzögert andere Anfragen in dieser Zeit spürbar.
 - **Sortierung nach Name** ist alphabetisch, nicht natürlich („Laptop 10“ vor „Laptop 2“).
 - **Mehrere Instanzen:** SQLite ist für eine Instanz ausgelegt. Horizontal skalieren mit mehreren Containern auf derselben Datenbank ist nicht vorgesehen.
