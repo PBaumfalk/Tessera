@@ -3,7 +3,7 @@
 ## Starten, Stoppen, Protokoll
 
 ```bash
-docker compose up -d --build      # starten bzw. nach Änderungen neu bauen
+docker compose pull && docker compose up -d   # starten mit fertigem Image (oder: up -d --build)
 docker compose ps                  # Status inkl. Healthcheck
 docker compose logs -f tessera     # Protokoll
 docker compose down                # stoppen (Daten bleiben im Volume tessera-data)
@@ -16,9 +16,11 @@ Das Protokoll enthält pro Anfrage nur Methode, Pfad ohne Query-String, Status u
 ## Updates
 
 ```bash
-git pull                     # bzw. neue Version einspielen
-docker compose up -d --build
+docker compose pull && docker compose up -d     # fertiges Image von ghcr.io
+# oder bei selbst gebautem Image:
+git pull && docker compose up -d --build
 ```
+Eine feste Version statt `latest` wählen Sie mit `TESSERA_VERSION=1.0.0` in `.env`.
 
 Datenbankmigrationen laufen beim Start automatisch und transaktional. Vor jeder Migration einer bestehenden Datenbank legt Tessera unter `/data/backups/vor-migration-*.db` eine Sicherung an. Schlägt eine Migration fehl, wird sie zurückgerollt und der Start abgebrochen.
 

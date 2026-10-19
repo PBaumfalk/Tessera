@@ -405,7 +405,7 @@ export function ContentPanel({ issues: allIssues, serverIssues }: { issues: Issu
           {general.map((i, k) => <div className="full" key={k}><IssueLine issue={i} /></div>)}
         </div>
         {missing.length > 0 && (
-          <div className="notice notice-warn" style={{ marginTop: 14 }}><Lock size={16} /><div>Das Passwort wurde bei diesem Code nicht gespeichert. Gib es erneut ein, um den Code zu exportieren.</div></div>
+          <div className="notice notice-warn" style={{ marginTop: 14 }}><Lock size={16} /><div>Vertrauliche Angaben ({missing.map((k) => t.fields.find((f) => f.key === k)?.label ?? k).join(', ')}) wurden bei diesem Code nicht gespeichert. Gib sie erneut ein, um den Code zu exportieren.</div></div>
         )}
         {hasSensitive && (
           <div style={{ marginTop: 14 }}>

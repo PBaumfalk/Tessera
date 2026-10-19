@@ -1,11 +1,12 @@
-# Tessera starten:   docker compose up -d --build
+# Tessera starten:   docker compose pull && docker compose up -d   (oder lokal bauen: docker compose up -d --build)
 # Protokoll:         docker compose logs -f tessera
 name: tessera
 
 services:
   tessera:
+    # Fertiges Image von GitHub; mit "docker compose up -d --build" wird stattdessen lokal gebaut
+    image: ghcr.io/pbaumfalk/tessera:${TESSERA_VERSION:-latest}
     build: .
-    image: tessera:1.0.0
     restart: unless-stopped
     init: true
     ports:

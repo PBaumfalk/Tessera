@@ -477,7 +477,7 @@ export function BatchExportDialog({ ids, onClose, rows }: { ids: string[] | null
               {['png', 'svg', 'pdf'].map((f) => <button key={f} className="chip" aria-pressed={formats.includes(f)} onClick={() => toggleFmt(f)}>{f.toUpperCase()}</button>)}
             </div>
             <div className="grid2">
-              <Field label="PNG-Breite" htmlFor="bx"><select id="bx" className="select" value={size} onChange={(e) => setSize(Number(e.target.value))}>{[512, 1024, 2048, 4096].map((v) => <option key={v} value={v}>{v} px</option>)}</select></Field>
+              <Field label="PNG-Breite" htmlFor="bx"><select id="bx" className="select" value={size} onChange={(e) => setSize(Number(e.target.value))}>{[512, 1024, 2048].map((v) => <option key={v} value={v}>{v} px</option>)}</select></Field>
               <Field label="SVG/PDF-Breite" htmlFor="bm"><TextInput id="bm" type="number" min={10} value={mm} onChange={(e) => setMm(Number(e.target.value))} /></Field>
             </div>
             <p className="faint small">Das Archiv enthält zusätzlich eine Übersicht als CSV. Vertrauliche Inhalte wie WLAN-Passwörter sind darin nicht aufgeführt.</p>

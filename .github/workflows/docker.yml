@@ -1,0 +1,111 @@
+# Dateiname bewusst unverändert: README.md verlinkt das Badge auf
+# .../actions/workflows/docker.yml/badge.svg.
+name: Tests, Image & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Typprüfung
+        run: npm run typecheck
+      - name: Unit- und Integrationstests
+        run: npm test
+
+  e2e:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Container bauen und frisch starten
+        run: |
+          TESSERA_PORT=8090 docker compose -p tessera-e2e up -d --build
+          for i in $(seq 1 60); do curl -sf http://localhost:8090/healthz && break; sleep 1; done
+      - name: Playwright-Browser installieren
+        run: npx playwright install --with-deps chromium
+      - name: End-to-End-Tests gegen den Container
+        run: npx playwright test
+      - name: Exportierte Dateien mit unabhängigen Decodern prüfen (ZBar, OpenCV)
+        run: |
+          docker build -t tessera-decoders tests/decoders
+          node tests/e2e/verify-exports.mjs
+      - name: Persistenz über Neustart
+        run: tests/e2e/persistence.sh
+      - name: Protokolle bei Fehlschlag
+        if: failure()
+        run: docker compose -p tessera-e2e logs --tail 80
+      - name: Aufräumen
+        if: always()
+        run: docker compose -p tessera-e2e down -v
+
+  image:
+    needs: [tests, e2e]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/pbaumfalk/tessera
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=short
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      - name: Image für amd64 und arm64 bauen und veröffentlichen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  release:
+    needs: image
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true

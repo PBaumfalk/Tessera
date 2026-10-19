@@ -11,6 +11,7 @@ import { ICONS } from '@shared/icons.generated';
 import { renderSvg } from '@shared/render';
 import { api } from '../lib/api';
 import { useEditor } from '../lib/editor-store';
+import { canEdit, useAuth } from '../lib/hooks';
 import { toast, toastError } from '../lib/toast';
 import type { Template } from '../lib/types';
 import { ColorInput, Dialog, Field, Glyph, Seg, Slider, Switch, TextInput } from '../components/ui';
@@ -169,6 +170,8 @@ async function fileToLogo(file: File): Promise<string> {
 
 export function DesignPanel({ payload }: { payload: string }) {
   const { design, setDesign, replaceDesign } = useEditor();
+  const auth = useAuth();
+  const editable = canEdit(auth.data?.user?.role);
   const [tab, setTab] = useState<Tab>('style');
   const [tplOpen, setTplOpen] = useState(false);
   const [tplName, setTplName] = useState('');
@@ -229,7 +232,7 @@ export function DesignPanel({ payload }: { payload: string }) {
             <div>
               <div className="spread" style={{ marginBottom: 8 }}>
                 <div className="section-title" style={{ margin: 0 }}>Eigene Vorlagen</div>
-                <button className="btn btn-sm" onClick={() => setTplOpen(true)}><Save size={14} /> Aktuelles Design sichern</button>
+                {editable && <button className="btn btn-sm" onClick={() => setTplOpen(true)}><Save size={14} /> Aktuelles Design sichern</button>}
               </div>
               {templates.data?.length ? (
                 <div className="opt-grid lg">
