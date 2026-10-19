@@ -8,7 +8,6 @@ Ehrlich festgehalten, was nicht oder nur eingeschränkt getestet ist bzw. bewuss
 - **Öffentlich erreichbare Kurzlinks:** Weiterleitung, die Sperre der Oberfläche auf dem öffentlichen Host und die Basisadresse wurden mit simulierten Host-Headern getestet. Ein echter Reverse Proxy mit TLS und öffentlicher Domain stand nicht zur Verfügung.
 - **Echte Smartphones:** Gelesen wurde mit vier unabhängigen Software-Decodern (ZXing-C++, jsQR, ZBar, OpenCV), dazu in simulierten Situationen (unscharf, klein, schwaches Licht, schräg). Mit physischen iPhone- oder Android-Kameras und gedruckten Exemplaren wurde nicht getestet. Die Kamera-Funktion des Scanners ist mangels Kamera in der Testumgebung ungetestet; das Lesen aus Bilddateien (PNG und SVG) ist getestet.
 - **Firefox:** Ließ sich in der Testumgebung nicht starten und ist ungetestet. Chromium und WebKit (Safari-Engine) sind getestet.
-- **Linux-Server mit x86-64:** Gebaut und betrieben wurde das Image auf Docker Desktop (ARM64). Alle nativen Abhängigkeiten (resvg) haben vorgefertigte Pakete für linux-x64. Ein Lauf auf einem x86-64-Host wurde aber nicht durchgeführt.
 
 ## Bewusste Grenzen
 

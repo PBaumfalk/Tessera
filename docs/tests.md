@@ -1,6 +1,6 @@
 # Tests und Ergebnisse
 
-Stand: 19.10.2026, Image `tessera:1.0.0`, Docker Desktop (ARM64), Node 24.
+Stand: 19.10.2026, Image `tessera:1.0.0`, Node 24. Lokal auf Docker Desktop (ARM64); zusätzlich läuft bei jedem Push die GitHub-Actions-Pipeline auf Ubuntu x86-64: Typprüfung, Unit-Tests, E2E gegen den Container, Decoder-Prüfung und Persistenz. Danach wird das Image für amd64 und arm64 gebaut.
 
 ## Befehle
 
